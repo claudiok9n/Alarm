@@ -7,9 +7,10 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.vision.CameraSource;
@@ -29,9 +30,12 @@ public class QRScanActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrscan);
 
-        LinearLayout layout1 = (LinearLayout) findViewById(R.id.cameraLayout);
-        CameraDraw fondo = new CameraDraw(this);
-        layout1.addView(fondo);
+        new Thread(new Runnable() {
+            public void run() {
+                //hilo para animacion de la camara
+                animThread();
+            }
+        }).start();
 
         ImageView visor = (ImageView)findViewById(R.id.cameraImage);
         visor.setImageResource(R.drawable.shape);
@@ -85,5 +89,40 @@ public class QRScanActivity extends Activity {
             }
         });
 
+    }
+
+    private Animation fade_in;
+    private Animation fade_out;
+    private LinearLayout layoutAnimation;
+    private void animThread() {
+        layoutAnimation = (LinearLayout) findViewById(R.id.cameraLayout);
+        fade_in = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        fade_out = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        layoutAnimation.setAnimation(fade_in);
+
+        fade_in.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                layoutAnimation.startAnimation(fade_out);
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        fade_out.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                layoutAnimation.startAnimation(fade_in);
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
     }
 }
