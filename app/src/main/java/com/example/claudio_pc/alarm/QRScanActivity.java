@@ -1,11 +1,15 @@
 package com.example.claudio_pc.alarm;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.vision.CameraSource;
@@ -24,6 +28,15 @@ public class QRScanActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrscan);
+
+        LinearLayout layout1 = (LinearLayout) findViewById(R.id.cameraLayout);
+        CameraDraw fondo = new CameraDraw(this);
+        layout1.addView(fondo);
+
+        ImageView visor = (ImageView)findViewById(R.id.cameraImage);
+        visor.setImageResource(R.drawable.shape);
+        Drawable rectangulo = this.getResources().getDrawable(R.drawable.shape);
+        visor.setImageDrawable(rectangulo);
 
         cameraView = (SurfaceView) findViewById(R.id.cameraView);
         barcodeInfo = (TextView) findViewById(R.id.infoTextView);
