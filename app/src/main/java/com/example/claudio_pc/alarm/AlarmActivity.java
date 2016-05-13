@@ -14,14 +14,30 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ListView;
+import model.model.entity.Alarm;
+import model.DataBaseIni;
+
+import java.util.List;
+
+import presenter.AlarmActivityPresenter;
+import presenter.AlarmListAdapter;
 
 public class AlarmActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AlarmActivityPresenter.View {
+    private ListView alarmListView;
+    private AlarmActivityPresenter alarmActivityPresenter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
+        DataBaseIni db = new DataBaseIni(getApplicationContext());
+
+        alarmListView = (ListView)findViewById(R.id.Alarm_listView);
+        alarmActivityPresenter = new AlarmActivityPresenter(this, db.getDataBase());
+        alarmActivityPresenter.refreshAlarmList();
+
         final AlarmReceiver alarmReciver = new AlarmReceiver();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -49,6 +65,8 @@ public class AlarmActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 alarmReciver.setAlarm(getApplicationContext());
+                Intent i = new Intent(getApplicationContext(), NewAlarmActivity.class);
+                startActivity(i);
             }
         });
         Button button_cancel_alarm = (Button)findViewById(R.id.cancel_alarm);
@@ -116,5 +134,10 @@ public class AlarmActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void updateAlarmList(List<Alarm> alarms) {
+        alarmListView.setAdapter(new AlarmListAdapter(getApplicationContext(), alarms));
     }
 }
