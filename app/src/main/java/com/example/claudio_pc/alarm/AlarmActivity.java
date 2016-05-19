@@ -13,11 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import model.model.entity.Alarm;
 import model.DataBaseIni;
-
+import android.widget.AdapterView.OnItemClickListener;
 import java.util.List;
 
 import presenter.AlarmActivityPresenter;
@@ -74,6 +75,22 @@ public class AlarmActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 alarmReciver.cancelAlarm(getApplicationContext());
+            }
+        });
+
+        alarmListView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Alarm alarm = null;
+                alarm = (Alarm)parent.getItemAtPosition(position);
+                Intent i = new Intent(getApplicationContext(), NewAlarmActivity.class);
+                i.putExtra("code", alarm.getCode());
+                i.putExtra("name", alarm.getName() );
+                i.putExtra("days", alarm.getDays());
+                i.putExtra("hour", alarm.getHour());
+                i.putExtra("active", alarm.getActive());
+                i.putExtra("repeat", alarm.getRepeat());
+                startActivity(i);
             }
         });
     }
@@ -138,6 +155,12 @@ public class AlarmActivity extends AppCompatActivity
 
     @Override
     public void updateAlarmList(List<Alarm> alarms) {
-        alarmListView.setAdapter(new AlarmListAdapter(getApplicationContext(), alarms));
+        alarmListView.setAdapter(new AlarmListAdapter(this , alarms));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        alarmActivityPresenter.refreshAlarmList();
     }
 }

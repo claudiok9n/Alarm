@@ -13,6 +13,11 @@ import model.DataBaseIni;
 import presenter.NewAlarmPresenter;
 
 public class NewAlarmActivity extends AppCompatActivity {
+    private static Boolean isNewAlarm = false;
+    private int code = 0;
+    private String name = null;
+    private String days = null;
+    private String hour = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,8 @@ public class NewAlarmActivity extends AppCompatActivity {
         final TimePicker timePickerHour = (TimePicker)findViewById(R.id.timePickerHour);
         Button buttonSave = (Button)findViewById(R.id.buttonSave);
 
+        ini();
+        editTextName.setText(name);
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,10 +40,25 @@ public class NewAlarmActivity extends AppCompatActivity {
                 cv.put("hour", timePickerHour.getCurrentHour().toString() + ":" + timePickerHour.getCurrentMinute().toString());
                 cv.put("days", getDays());
                 cv.put("state_id", 1);
-                newAlarmPresenter.SaveNewAlarm(db.getDataBase(), cv);
+                if(isNewAlarm) {
+                    newAlarmPresenter.SaveNewAlarm(db.getDataBase(), cv);
+                }else{
+                    cv.put("code", code);
+                    newAlarmPresenter.UpdateAlarm(db.getDataBase(), cv);
+                }
+                finish();
             }
         });
 
+    }
+
+    private void ini(){
+        code = getIntent().getIntExtra("code", -1);
+        name = getIntent().getStringExtra("name");
+        days = getIntent().getStringExtra("days");
+        hour = getIntent().getStringExtra("hour");
+        if(code == -1)
+            isNewAlarm = true;
     }
 
     private String getDays(){
@@ -49,10 +71,10 @@ public class NewAlarmActivity extends AppCompatActivity {
         checkBoxJ = (CheckBox) findViewById(R.id.checkBoxJ);
         checkBoxV = (CheckBox) findViewById(R.id.checkBoxV);
         checkBoxS = (CheckBox) findViewById(R.id.checkBoxS);
-        resu = String.valueOf(checkBoxD.isChecked()) + "|" + String.valueOf(checkBoxL.isChecked())
-                + "|" + String.valueOf(checkBoxM.isChecked()) + "|" + String.valueOf(checkBoxX.isChecked())
-                + "|" + String.valueOf(checkBoxJ.isChecked()) + "|" + String.valueOf(checkBoxV.isChecked())
-                + "|" + String.valueOf(checkBoxS.isChecked());
-        return resu;
+        resu = String.valueOf(checkBoxD.isChecked()) + "-" + String.valueOf(checkBoxL.isChecked())
+                + "-" + String.valueOf(checkBoxM.isChecked()) + "-" + String.valueOf(checkBoxX.isChecked())
+                + "-" + String.valueOf(checkBoxJ.isChecked()) + "-" + String.valueOf(checkBoxV.isChecked())
+                + "-" + String.valueOf(checkBoxS.isChecked());
+        return resu.replace("true", "1").replace("false", "0");
     }
 }

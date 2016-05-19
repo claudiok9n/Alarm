@@ -1,7 +1,6 @@
 package presenter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,12 @@ import java.util.List;
  * Created by csantamaria on 11/05/2016.
  */
 public class AlarmListAdapter extends BaseAdapter {
+    private Context context;
     private LayoutInflater layoutInflater = null;
     private List<Alarm> alarms = null;
 
     public AlarmListAdapter(Context _context, List<Alarm> _alarms){
-        layoutInflater = LayoutInflater.from(_context);
+        context = _context;
         alarms = _alarms;
     }
 
@@ -43,13 +43,16 @@ public class AlarmListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        View itemView = convertView;
         ViewHolder viewHolder;
-        if(convertView == null){
-            convertView = layoutInflater.inflate(R.layout.alarm_list_item, parent, false);
-            viewHolder = new ViewHolder(convertView);
-            convertView.setTag(viewHolder);
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        if(itemView == null){
+            itemView = layoutInflater.inflate(R.layout.alarm_list_item, parent, false);
+            viewHolder = new ViewHolder(itemView);
+            itemView.setTag(viewHolder);
         } else{
-            viewHolder = (ViewHolder) convertView.getTag();
+            viewHolder = (ViewHolder) itemView.getTag();
         }
 
         viewHolder.name.setText(alarms.get(position).getName());
@@ -62,7 +65,7 @@ public class AlarmListAdapter extends BaseAdapter {
         viewHolder.checkBoxV.setChecked(getDaysChecked(alarms.get(position).getDays(), 5));
         viewHolder.checkBoxS.setChecked(getDaysChecked(alarms.get(position).getDays(), 6));
 
-        return convertView;
+        return itemView;
     }
 
     private class ViewHolder{
@@ -72,8 +75,6 @@ public class AlarmListAdapter extends BaseAdapter {
         public ViewHolder(View v){
             name = (TextView) v.findViewById(R.id.name_textView);
             hour = (TextView) v.findViewById(R.id.hour_textView);
-            name.setTextColor(Color.DKGRAY);
-            hour.setTextColor(Color.DKGRAY);
 
             checkBoxD = (CheckBox) v.findViewById(R.id.checkBoxD);
             checkBoxL = (CheckBox) v.findViewById(R.id.checkBoxL);
@@ -86,8 +87,11 @@ public class AlarmListAdapter extends BaseAdapter {
     }
 
     private boolean getDaysChecked(String days, int day){
-        String[] resu = null;
-        resu = days.split("|");
-        return Boolean.valueOf(resu[day]);
+        String[] value = null;
+        Boolean resu = false;
+        value = days.split("-");
+        if(value[day].equals("1"))
+            resu = true;
+        return resu;
     }
 }

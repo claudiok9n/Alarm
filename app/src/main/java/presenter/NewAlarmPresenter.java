@@ -18,5 +18,10 @@ public class NewAlarmPresenter extends Activity {
         alarmDAO.addAlarm(cv);
     }
 
+    public void UpdateAlarm(SQLiteDatabase db, ContentValues cv){
+        AlarmDAO alarmDAO = new AlarmDAO(db);
+        int code = (int) cv.get("code");
+        alarmDAO.updateAlarm(code, cv);
+    }
 
 }
