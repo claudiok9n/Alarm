@@ -60,12 +60,11 @@ public class AlarmActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        alarmReciver.setAlarm(this);
+
         Button button_add_alarm = (Button)findViewById(R.id.add_alarm);
         button_add_alarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alarmReciver.setAlarm(getApplicationContext());
                 Intent i = new Intent(getApplicationContext(), NewAlarmActivity.class);
                 startActivity(i);
             }
@@ -81,8 +80,7 @@ public class AlarmActivity extends AppCompatActivity
         alarmListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Alarm alarm = null;
-                alarm = (Alarm)parent.getItemAtPosition(position);
+                Alarm alarm = (Alarm)parent.getItemAtPosition(position);
                 Intent i = new Intent(getApplicationContext(), NewAlarmActivity.class);
                 i.putExtra("code", alarm.getCode());
                 i.putExtra("name", alarm.getName() );

@@ -28,4 +28,5 @@ public interface AlarmDAOI {
     void updateAlarm(int code, ContentValues valuesToUpdate);
     void deleteAlarm(int code);
     void stateAlarm(int code, int state);
+    int getMaxCode();
 }

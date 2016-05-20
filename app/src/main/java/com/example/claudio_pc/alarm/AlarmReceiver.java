@@ -3,10 +3,13 @@ package com.example.claudio_pc.alarm;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.v4.content.WakefulBroadcastReceiver;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -23,23 +26,32 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         startWakefulService(context, service);
     }
 
-    public void setAlarm(Context context){
-        alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+    public void setAlarm(Context context, ContentValues cv){
+        int code = (int) cv.get("code");
+        String hour = (String) cv.get("hour");
+        String[] hourValue = hour.split(":");
+        String days = (String) cv.get("days");
+        String[] daysValue = days.split("-");
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 03);
-        calendar.set(Calendar.MINUTE, 01);
+        for(int i=0; i<daysValue.length; i++) {
+            if(daysValue[i].toString().equals("1")){
+                alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(context, AlarmReceiver.class);
+                intent.setData(Uri.parse("|code|" + code + "|day|" + (i + 1)));
+                alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
-        // Set the alarm to fire at approximately 8:30 a.m., according to the device's
-        // clock, and to repeat once a day.
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.DAY_OF_WEEK, i + 1);
+                calendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(hourValue[0]));
+                calendar.set(Calendar.MINUTE, Integer.valueOf(hourValue[1]));
+                Toast.makeText(context, "Alarm active...", Toast.LENGTH_LONG).show();
+                alarmMgr.set(AlarmManager.RTC_WAKEUP,
+                        calendar.getTimeInMillis(), alarmIntent);
+            }
+        }
 
-        // Enable {@code SampleBootReceiver} to automatically restart the alarm when the
-        // device is rebooted.
+        // Enable {@code SampleBootReceiver} to automatically restart the alarm when the device is rebooted.
         ComponentName receiver = new ComponentName(context, AlarmBootReceiver.class);
         PackageManager pm = context.getPackageManager();
 

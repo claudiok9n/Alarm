@@ -55,6 +55,15 @@ public class AlarmDAO implements AlarmDAOI {
     }
 
     @Override
+    public int getMaxCode (){
+        int value = 0;
+        Cursor cursor = db.rawQuery("SELECT code FROM " + DataBase.TABLE_ALARMS + " ORDER BY code DESC LIMIT 1", null);
+        if (cursor != null)
+            value = cursor.getColumnIndex(AlarmDAOI.COLUMN_CODE);
+        return value;
+    }
+
+    @Override
     public void stateAlarm(int code, int state){
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_ACTIVE, state);
@@ -63,7 +72,7 @@ public class AlarmDAO implements AlarmDAOI {
 
     private Alarm getEntity(Cursor c){
         Alarm alarm = new Alarm();
-        alarm.setName(c.getString(c.getColumnIndex(AlarmDAOI.COLUMN_CODE)));
+        alarm.setCode(c.getInt(c.getColumnIndex(AlarmDAOI.COLUMN_CODE)));
         alarm.setName(c.getString(c.getColumnIndex(AlarmDAOI.COLUMN_NAME)));
         alarm.setHour(c.getString(c.getColumnIndex(AlarmDAOI.COLUMN_HOUR)));
         alarm.setDays(c.getString(c.getColumnIndex(AlarmDAOI.COLUMN_DAYS)));

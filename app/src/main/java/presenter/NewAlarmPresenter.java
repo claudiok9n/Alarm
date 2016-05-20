@@ -1,7 +1,6 @@
 package presenter;
 
 import android.content.ContentValues;
-import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 import model.model.dao.AlarmDAO;
 
@@ -9,7 +8,7 @@ import model.model.dao.AlarmDAO;
 /**
  * Created by csantamaria on 12/05/2016.
  */
-public class NewAlarmPresenter extends Activity {
+public class NewAlarmPresenter {
     public NewAlarmPresenter(){
 
     }
@@ -24,4 +23,8 @@ public class NewAlarmPresenter extends Activity {
         alarmDAO.updateAlarm(code, cv);
     }
 
+    public int getMaxCode(SQLiteDatabase db) {
+        AlarmDAO alarmDAO = new AlarmDAO(db);
+        return alarmDAO.getMaxCode();
+    }
 }
