@@ -8,7 +8,7 @@ import android.content.Intent;
  * Created by Claudio_pc on 02/05/2016.
  */
 public class AlarmBootReceiver extends BroadcastReceiver {
-    AlarmReceiver alarm = new AlarmReceiver();
+    //AlarmReceiver alarm = new AlarmReceiver();
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))

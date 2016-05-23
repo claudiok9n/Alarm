@@ -15,6 +15,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.sql.Time;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -50,7 +51,7 @@ public class NewAlarmActivity extends AppCompatActivity {
         timePickerHour.setIs24HourView(true);
 
         Calendar cal = Calendar.getInstance();
-        timePickerHour.setCurrentHour(cal.get(Calendar.HOUR));
+        timePickerHour.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
         timePickerHour.setCurrentMinute(cal.get(Calendar.MINUTE));
 
         ini();

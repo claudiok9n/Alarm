@@ -11,7 +11,7 @@ public class DataBase extends SQLiteOpenHelper {
     public static final String DB_NAME = "alarm";
     public static final String TABLE_ALARMS = "alarms";
     public static final String CREATE_TABLE_ALARMS = "CREATE TABLE [alarms] (\n" +
-                                                "  [code] INT AUTO INCREMENT, \n" +
+                                                "  [code] INTEGER PRIMARY KEY AUTOINCREMENT, \n" +
                                                 "  [name] TEXT(100) NOT NULL, \n" +
                                                 "  [hour] TIME NOT NULL, \n" +
                                                 "  [days] TEXT(20) NOT NULL, \n" +
@@ -20,8 +20,7 @@ public class DataBase extends SQLiteOpenHelper {
                                                 "  [repeat] TEXT(200),\n" +
                                                 "  [leave_alarm_type] INT(2),\n" +
                                                 "  [active] BOOL,\n" +
-                                                "  [state_id] INT(2),\n" +
-                                                "  PRIMARY KEY (code));\n";
+                                                "  [state_id] INT(2))\n";
 
     public DataBase(Context contexto, String nombre, SQLiteDatabase.CursorFactory factory, int version) {
         super(contexto, nombre, factory, version);
